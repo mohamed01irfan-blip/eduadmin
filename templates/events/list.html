@@ -1,0 +1,48 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Events{% endblock %}
+{% block page_title %}Events{% endblock %}
+{% block page_subtitle %}Manage school events and activities{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;">All Events</h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:2px;">{{ events.count }} event{{ events.count|pluralize }} scheduled</p>
+  </div>
+  <a href="{% url 'event_add' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Create Event
+  </a>
+</div>
+
+{% if events %}
+<div class="events-grid">
+  {% for event in events %}
+  <div class="event-card" style="animation-delay: {{ forloop.counter0 }}00ms;">
+    <div class="event-date-badge">
+      <i class="fa-regular fa-calendar"></i> {{ event.date }}
+    </div>
+    <div class="event-title">{{ event.title }}</div>
+    <div class="event-desc">{{ event.description }}</div>
+    <div class="event-actions">
+      <a href="{% url 'event_edit' event.pk %}" class="btn btn-info btn-sm">
+        <i class="fa-solid fa-pen"></i> Edit
+      </a>
+      <a href="{% url 'event_delete' event.pk %}" class="btn btn-danger btn-sm">
+        <i class="fa-solid fa-trash"></i> Delete
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="table-card">
+  <div class="empty-state">
+    <div class="icon">📅</div>
+    <h3>No events yet</h3>
+    <p style="font-size:0.8rem;margin-top:0.4rem;">
+      <a href="{% url 'event_add' %}" style="color:var(--primary-light);">Create the first event</a>
+    </p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

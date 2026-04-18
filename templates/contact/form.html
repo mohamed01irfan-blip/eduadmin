@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us — EduAdmin</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="auth-bg-shapes">
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <div class="shape shape-3"></div>
+</div>
+
+<div class="contact-wrapper">
+  <div class="contact-card">
+    <div class="auth-logo">
+      <div class="logo-icon">✉️</div>
+      <h1>Contact Us</h1>
+      <p>EduAdmin — School Management</p>
+    </div>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }}">
+          <i class="fa-solid {% if msg.tags == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-control" name="name" required
+                 placeholder="John Doe" value="{{ request.POST.name|default:'' }}"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address <span style="color:var(--danger)">*</span></label>
+          <input type="email" class="form-control" name="email" required
+                 placeholder="john@example.com" value="{{ request.POST.email|default:'' }}"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Subject <span style="color:var(--danger)">*</span></label>
+        <input type="text" class="form-control" name="subject" required
+               placeholder="What's this about?" value="{{ request.POST.subject|default:'' }}"/>
+      </div>
+
+      <div class="form-group">
+        <label>Message <span style="color:var(--danger)">*</span></label>
+        <textarea class="form-control" name="body" required
+                  placeholder="Write your message here…">{{ request.POST.body|default:'' }}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">
+        <i class="fa-solid fa-paper-plane"></i> Send Message
+      </button>
+    </form>
+
+    <div style="text-align:center;margin-top:1.25rem;">
+      <a href="{% url 'login' %}" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

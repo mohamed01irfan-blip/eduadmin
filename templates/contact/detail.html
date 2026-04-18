@@ -1,0 +1,54 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Message Detail{% endblock %}
+{% block page_title %}Message Detail{% endblock %}
+{% block page_subtitle %}View full message content{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem;">
+  <a href="{% url 'message_list' %}" class="btn btn-ghost btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Messages
+  </a>
+</div>
+
+<div class="detail-card">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap;">
+    <div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text-primary);">{{ msg.subject }}</h3>
+      <p style="color:var(--text-muted);font-size:0.8rem;margin-top:4px;">Received {{ msg.created_at|date:"F d, Y \a\t H:i" }}</p>
+    </div>
+    <span class="badge {% if msg.is_read %}badge-read{% else %}badge-unread{% endif %}">
+      {% if msg.is_read %}✓ Read{% else %}● Unread{% endif %}
+    </span>
+  </div>
+
+  <div class="detail-row">
+    <span class="detail-label">From</span>
+    <span class="detail-value">{{ msg.name }}</span>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">Email</span>
+    <span class="detail-value"><a href="mailto:{{ msg.email }}" style="color:var(--primary-light);">{{ msg.email }}</a></span>
+  </div>
+  <div class="detail-row">
+    <span class="detail-label">Subject</span>
+    <span class="detail-value">{{ msg.subject }}</span>
+  </div>
+  <div class="detail-row" style="flex-direction:column;">
+    <span class="detail-label" style="margin-bottom:0.5rem;">Message</span>
+    <div class="msg-body-block">{{ msg.body }}</div>
+  </div>
+
+  <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;">
+    <a href="{% url 'message_toggle_read' msg.pk %}" class="btn btn-ghost btn-sm">
+      <i class="fa-solid {% if msg.is_read %}fa-envelope{% else %}fa-envelope-open{% endif %}"></i>
+      Mark as {% if msg.is_read %}Unread{% else %}Read{% endif %}
+    </a>
+    <a href="mailto:{{ msg.email }}" class="btn btn-success btn-sm">
+      <i class="fa-solid fa-reply"></i> Reply via Email
+    </a>
+    <a href="{% url 'message_delete' msg.pk %}" class="btn btn-danger btn-sm">
+      <i class="fa-solid fa-trash"></i> Delete
+    </a>
+  </div>
+</div>
+{% endblock %}

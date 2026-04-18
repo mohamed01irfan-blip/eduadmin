@@ -1,0 +1,27 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Delete Message{% endblock %}
+{% block page_title %}Delete Message{% endblock %}
+{% block page_subtitle %}This action cannot be undone{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem;">
+  <a href="{% url 'message_list' %}" class="btn btn-ghost btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="delete-card">
+  <div class="delete-icon">🗑️</div>
+  <h3>Delete Message?</h3>
+  <p>You are about to permanently delete the message <strong style="color:var(--text-primary);">"{{ msg.subject }}"</strong> from {{ msg.name }}.</p>
+  <div style="display:flex;gap:0.75rem;justify-content:center;">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">
+        <i class="fa-solid fa-trash"></i> Yes, Delete
+      </button>
+    </form>
+    <a href="{% url 'message_list' %}" class="btn btn-ghost">Cancel</a>
+  </div>
+</div>
+{% endblock %}

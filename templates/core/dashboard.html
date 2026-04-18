@@ -1,0 +1,189 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Overview of your system{% endblock %}
+
+{% block content %}
+
+<!-- ===== STATS ===== -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-title">Total Students</div>
+    <div class="stat-value stat-value-counter" data-value="{{ total_students }}">{{ total_students }}</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">Total Events</div>
+    <div class="stat-value stat-value-counter" data-value="{{ total_events }}">{{ total_events }}</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">Messages</div>
+    <div class="stat-value stat-value-counter" data-value="{{ total_messages }}">{{ total_messages }}</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-title">Unread</div>
+    <div class="stat-value stat-value-counter" data-value="{{ unread_messages }}">{{ unread_messages }}</div>
+  </div>
+</div>
+
+<!-- ===== CHARTS ===== -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <h3>Students by Department</h3>
+    <canvas id="deptChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3>Students by Year</h3>
+    <canvas id="yearChart"></canvas>
+  </div>
+</div>
+
+<!-- ===== RECENT DATA ===== -->
+<div class="tables-grid">
+
+  <!-- Students -->
+  <div class="table-card modern-card">
+    <div class="card-header">
+      <h3>Recent Students</h3>
+      <span class="badge">Latest</span>
+    </div>
+
+    <table class="data-table modern-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Dept</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in recent_students %}
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar">{{ s.name|first }}</div>
+              <span>{{ s.name }}</span>
+            </div>
+          </td>
+          <td><span class="chip">{{ s.department }}</span></td>
+          <td><span class="year-badge">Year {{ s.year }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No data</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Events -->
+  <div class="table-card modern-card">
+    <div class="card-header">
+      <h3>Recent Events</h3>
+      <span class="badge success">Active</span>
+    </div>
+
+    <table class="data-table modern-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in recent_events %}
+        <tr>
+          <td>{{ e.title }}</td>
+          <td><span class="date-chip">{{ e.date }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">No data</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ===== SAFE JSON DATA ===== -->
+{{ dept_labels|json_script:"dept-labels-data" }}
+{{ dept_counts|json_script:"dept-counts-data" }}
+{{ year_labels|json_script:"year-labels-data" }}
+{{ year_counts|json_script:"year-counts-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const deptLabels = JSON.parse(document.getElementById('dept-labels-data').textContent);
+  const deptCounts = JSON.parse(document.getElementById('dept-counts-data').textContent);
+
+  const yearLabels = JSON.parse(document.getElementById('year-labels-data').textContent);
+  const yearCounts = JSON.parse(document.getElementById('year-counts-data').textContent);
+
+  // Dept Chart
+  new Chart(document.getElementById('deptChart'), {
+    type: 'doughnut',
+    data: {
+      labels: deptLabels,
+      datasets: [{
+        data: deptCounts,
+        backgroundColor: ['#4f46e5','#06b6d4','#10b981','#f59e0b','#ef4444']
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#000'
+          }
+        }
+      }
+    }
+  });
+
+  // Year Chart
+new Chart(document.getElementById('yearChart'), {
+  type: 'bar',
+  data: {
+    labels: yearLabels,
+    datasets: [{
+      label: 'Students',
+      data: yearCounts,
+      backgroundColor: '#4f46e5'
+    }]
+  },
+  options: {
+    responsive: true, // 🔥 ADD THIS
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: '#000' }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#000' }
+      },
+      y: {
+        ticks: { color: '#000' }
+      }
+    }
+  }
+});
+});
+</script>
+
+{% endblock %}

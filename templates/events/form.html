@@ -1,0 +1,49 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}{% if event %}Edit Event{% else %}Create Event{% endif %}{% endblock %}
+{% block page_title %}{% if event %}Edit Event{% else %}Create Event{% endif %}{% endblock %}
+{% block page_subtitle %}{% if event %}Update event details{% else %}Schedule a new event{% endif %}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem;">
+  <a href="{% url 'event_list' %}" class="btn btn-ghost btn-sm">
+    <i class="fa-solid fa-arrow-left"></i> Back to Events
+  </a>
+</div>
+
+<div class="form-page-card">
+  <div class="card-title" style="margin-bottom:1.5rem;">
+    <span class="dot" style="background:var(--secondary)"></span>
+    {% if event %}Edit: <span style="color:var(--primary-light)">{{ event.title }}</span>{% else %}New Event{% endif %}
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Event Title <span style="color:var(--danger)">*</span></label>
+      <input type="text" class="form-control" name="title" required
+             placeholder="e.g. Annual Science Fair"
+             value="{{ event.title|default:'' }}"/>
+    </div>
+
+    <div class="form-group">
+      <label>Description <span style="color:var(--danger)">*</span></label>
+      <textarea class="form-control" name="description" required
+                placeholder="Describe the event…" style="min-height:140px;">{{ event.description|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Event Date <span style="color:var(--danger)">*</span></label>
+      <input type="date" class="form-control" name="date" required
+             value="{{ event.date|default:'' }}"/>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;">
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid {% if event %}fa-floppy-disk{% else %}fa-calendar-plus{% endif %}"></i>
+        {% if event %}Save Changes{% else %}Create Event{% endif %}
+      </button>
+      <a href="{% url 'event_list' %}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Messages{% endblock %}
+{% block page_subtitle %}Inbox from contact form submissions{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;">
+      Inbox
+      {% if unread > 0 %}
+        <span style="margin-left:0.5rem;background:rgba(255,71,87,0.15);color:#ff8fa0;border:1px solid rgba(255,71,87,0.25);border-radius:20px;padding:0.2rem 0.65rem;font-size:0.78rem;">{{ unread }} unread</span>
+      {% endif %}
+    </h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:2px;">{{ messages_list.count }} message{{ messages_list.count|pluralize }} total</p>
+  </div>
+</div>
+
+<div class="table-card">
+  {% if messages_list %}
+    {% for msg in messages_list %}
+    <div class="msg-item {% if not msg.is_read %}unread{% endif %}">
+      <div class="msg-dot {% if msg.is_read %}read{% endif %}"></div>
+      <div style="flex:1;min-width:0;">
+        <a href="{% url 'message_detail' msg.pk %}" style="text-decoration:none;">
+          <div class="msg-subject {% if not msg.is_read %}{% endif %}">{{ msg.subject }}</div>
+          <div class="msg-preview">From {{ msg.name }} &lt;{{ msg.email }}&gt; — {{ msg.body|truncatechars:80 }}</div>
+        </a>
+      </div>
+      <div class="msg-meta">
+        <div class="msg-time">{{ msg.created_at|date:"M d, Y" }}</div>
+        <div style="display:flex;gap:0.35rem;justify-content:flex-end;margin-top:0.35rem;">
+          <span class="badge {% if msg.is_read %}badge-read{% else %}badge-unread{% endif %}">
+            {% if msg.is_read %}Read{% else %}Unread{% endif %}
+          </span>
+          <a href="{% url 'message_toggle_read' msg.pk %}" class="btn btn-ghost btn-sm" style="padding:0.2rem 0.5rem;font-size:0.7rem;" title="Toggle read/unread">
+            <i class="fa-solid {% if msg.is_read %}fa-envelope{% else %}fa-envelope-open{% endif %}"></i>
+          </a>
+          <a href="{% url 'message_delete' msg.pk %}" class="btn btn-danger btn-sm" style="padding:0.2rem 0.5rem;font-size:0.7rem;">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">✉️</div>
+      <h3>No messages yet</h3>
+      <p style="font-size:0.8rem;margin-top:0.4rem;color:var(--text-muted);">Messages from the contact form will appear here.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

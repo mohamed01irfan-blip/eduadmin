@@ -1,0 +1,108 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block page_subtitle %}Manage enrolled students{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;">All Students
+      <span style="margin-left:0.5rem;background:rgba(108,99,255,0.15);color:var(--primary-light);border:1px solid rgba(108,99,255,0.2);border-radius:20px;padding:0.2rem 0.65rem;font-size:0.8rem;">{{ total }}</span>
+    </h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:2px;">View and manage all student records</p>
+  </div>
+  <a href="{% url 'student_add' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Add Student
+  </a>
+</div>
+
+<div class="table-card">
+  <div class="table-header">
+    <!-- Search form -->
+    <form method="get" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;width:100%;">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
+        <input type="text" name="search" placeholder="Search by name or email…"
+               value="{{ search }}"/>
+      </div>
+      <div class="filter-bar">
+        <select name="department">
+          <option value="">All Departments</option>
+          {% for code, name in departments %}
+            <option value="{{ code }}" {% if dept_filter == code %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
+        <select name="year">
+          <option value="">All Years</option>
+          {% for num, label in years %}
+            <option value="{{ num }}" {% if year_filter == num|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-ghost btn-sm"><i class="fa-solid fa-filter"></i> Filter</button>
+        {% if search or dept_filter or year_filter %}
+          <a href="{% url 'student_list' %}" class="btn btn-ghost btn-sm"><i class="fa-solid fa-xmark"></i> Clear</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  {% if students %}
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td style="color:var(--text-muted);">{{ forloop.counter }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.75rem;font-weight:700;flex-shrink:0;">
+                {{ s.name|first|upper }}
+              </div>
+              <span style="font-weight:600;color:var(--text-primary);">{{ s.name }}</span>
+            </div>
+          </td>
+          <td><span class="badge badge-dept">{{ s.get_department_display }}</span></td>
+          <td><span class="badge badge-year">Year {{ s.year }}</span></td>
+          <td>{{ s.email }}</td>
+          <td>{{ s.phone }}</td>
+          <td>
+            <div class="actions-cell">
+              <a href="{% url 'student_edit' s.pk %}" class="btn btn-info btn-sm" data-tooltip="Edit">
+                <i class="fa-solid fa-pen"></i>
+              </a>
+              <a href="{% url 'student_delete' s.pk %}" class="btn btn-danger btn-sm" data-tooltip="Delete">
+                <i class="fa-solid fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">👨‍🎓</div>
+    <h3>No students found</h3>
+    <p style="font-size:0.8rem;margin-top:0.4rem;">
+      {% if search or dept_filter or year_filter %}
+        Try adjusting your filters
+      {% else %}
+        <a href="{% url 'student_add' %}" style="color:var(--primary-light);">Add the first student</a>
+      {% endif %}
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Student Portal — EduAdmin{% endblock %}
+
+{% block body %}
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;">
+  <div style="text-align:center;max-width:520px;">
+    <div style="font-size:4rem;margin-bottom:1rem;">🎓</div>
+    <h1 style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#F0F0FF,#8b85ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;">
+      Welcome, {{ request.user.get_full_name|default:request.user.username }}!
+    </h1>
+    <p style="color:rgba(240,240,255,0.6);font-size:1rem;line-height:1.7;margin-bottom:2rem;">
+      You're logged in as a <strong style="color:#8b85ff;">student</strong>. 
+      The admin dashboard is accessible only to administrators. 
+      You can use the contact form to reach the admin team.
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{% url 'contact' %}" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:linear-gradient(135deg,#6C63FF,#8b85ff);color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-family:'DM Sans',sans-serif;">
+        <i class="fa-solid fa-envelope"></i> Contact Admin
+      </a>
+      <a href="{% url 'logout' %}" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(240,240,255,0.7);border-radius:10px;text-decoration:none;font-weight:600;font-family:'DM Sans',sans-serif;">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </a>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+{% endblock %}
